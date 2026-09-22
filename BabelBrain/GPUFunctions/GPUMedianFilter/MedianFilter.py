@@ -131,6 +131,62 @@ def MedianFilter(data,size,GPUBackend='OpenCL'):
             output_section_pr = clp.Buffer(ctx, mf.WRITE_ONLY, output_section.nbytes)
             
             # Kernel call
+            # added by ChatGPT
+            device = queue.device
+            
+            print("\n=== Median Filter OpenCL Diagnostic ===")
+            print("Device:", device.name)
+            print("Input shape:", data_section.shape)
+            print("Output shape:", output_section.shape)
+            print("Filter shape:", footprint.shape)
+            
+            print("Input MB:",
+                  data_section.nbytes / 1024**2)
+            
+            print("Output MB:",
+                  output_section.nbytes / 1024**2)
+            
+            print("Global memory MB:",
+                  device.global_mem_size / 1024**2)
+            
+            print("Max allocation MB:",
+                  device.max_mem_alloc_size / 1024**2)
+            
+            print("Max work-group size:",
+                  device.max_work_group_size)
+            
+            print("Max work-item sizes:",
+                  device.max_work_item_sizes)
+            
+            print("Local memory KB:",
+                  device.local_mem_size / 1024)
+            
+            import pyopencl as cl
+            
+            print(
+                "Kernel max work-group size:",
+                knl.get_work_group_info(
+                    cl.kernel_work_group_info.WORK_GROUP_SIZE,
+                    device
+                )
+            )
+            
+            print(
+                "Kernel private memory:",
+                knl.get_work_group_info(
+                    cl.kernel_work_group_info.PRIVATE_MEM_SIZE,
+                    device
+                )
+            )
+            
+            print(
+                "Kernel local memory:",
+                knl.get_work_group_info(
+                    cl.kernel_work_group_info.LOCAL_MEM_SIZE,
+                    device
+                )
+            )
+            # added by ChatGPT
             knl(queue, output_section.shape, 
                 None,
                 data_section_pr,
